@@ -1,0 +1,9 @@
+Pentru:
+Movie-Manager
+User=luca
+Parola=1234
+
+Prognosis
+User=luca
+Parola=123
+
