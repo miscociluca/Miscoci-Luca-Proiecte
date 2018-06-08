@@ -1,0 +1,815 @@
+ //GUI.java
+                                                       
+import java.awt.EventQueue;
+
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import java.awt.Color;
+import javax.swing.JSplitPane;
+import java.awt.BorderLayout;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField;
+import java.awt.Font;
+import java.awt.Image;
+import javax.imageio.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.BevelBorder;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.*;
+import javax.swing.JSeparator;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+import java.awt.Component;
+public class gui {
+
+	private String user;private String pass;
+	
+	private JFrame frame;
+	private JTextField textField;
+	private JPasswordField passwordField;
+	String url = "jdbc:mysql://localhost:3306/demo?useSSL=false";
+	Connection con1;
+	String log="select Nume_utilizator,Parola from log_in";
+	Statement stmt1;
+	public static void main(String[] args) {
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					gui window = new gui();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+
+	public gui() {
+		initialize();
+	}
+
+	@SuppressWarnings("deprecation")
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(250, 100, 700, 500);
+		frame.setTitle("LOG IN");
+		JPanel panel = new JPanel();
+		frame.getContentPane().add(panel, BorderLayout.CENTER);
+		panel.setLayout(null);
+		JLabel background=new JLabel(new ImageIcon("C:\\Users\\misco\\workspace\\MyApp\\foto\\foto.jpg"));
+		background.setSize(700, 500);
+        panel.add(background);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(102, 153, 153));
+		panel_2.setBorder(new CompoundBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), new BevelBorder(BevelBorder.LOWERED, null, null, null, null)));
+		panel_2.setBounds(231, 191, 78, 36);
+		background.add(panel_2);
+		panel_2.setLayout(null);
+		
+		JLabel lblUsername = new JLabel("Username:");
+		lblUsername.setVerticalAlignment(SwingConstants.TOP);
+		lblUsername.setBounds(6, 11, 72, 41);
+		panel_2.add(lblUsername);
+		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblUsername.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		textField = new JTextField();
+		textField.setBounds(313, 197, 151, 26);
+		background.add(textField);
+		textField.setColumns(10);
+		JPanel panel_3 = new JPanel();
+		panel_3.setBackground(new Color(102, 153, 153));
+		panel_3.setBorder(new CompoundBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), new BevelBorder(BevelBorder.LOWERED, null, null, null, null)));
+		panel_3.setBounds(231, 229, 78, 36);
+		background.add(panel_3);
+		panel_3.setLayout(null);
+		
+		JLabel lblPassword = new JLabel("Password:");
+		lblPassword.setBounds(6, 11, 72, 41);
+		panel_3.add(lblPassword);
+		lblPassword.setVerticalAlignment(SwingConstants.TOP);
+		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblPassword.setHorizontalAlignment(SwingConstants.LEFT);
+		lblPassword.setBackground(new Color(102, 153, 153));
+		
+		passwordField = new JPasswordField();
+		passwordField.setBounds(313, 236, 151, 26);
+		background.add(passwordField);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(102, 153, 153));
+		panel_1.setBorder(new CompoundBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), new BevelBorder(BevelBorder.LOWERED, null, null, null, null)));
+		panel_1.setBounds(332, 11, 98, 84);
+		background.add(panel_1);
+		panel_1.setLayout(null);
+		
+		JLabel lblLogIn = new JLabel("Log in");
+		lblLogIn.setBounds(3, 16, 87, 57);
+		panel_1.add(lblLogIn);
+		lblLogIn.setBackground(new Color(102, 153, 153));
+		lblLogIn.setHorizontalAlignment(SwingConstants.CENTER);
+		lblLogIn.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 26));
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				frame.dispose();
+			}
+		});
+		btnCancel.setBounds(355, 302, 89, 23);
+		background.add(btnCancel);
+		
+		JButton btnEnter = new JButton("Enter");
+		btnEnter.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				user=textField.getText();
+				pass =passwordField.getText();
+				
+				try {
+					con1 = DriverManager.getConnection(url,"Luca", "1234");
+					stmt1 = con1.createStatement();
+					ResultSet rs=stmt1.executeQuery(log);
+					while (rs.next()) {
+						String s1=rs.getString("Nume_utilizator");
+						String s2=rs.getString("Parola");
+					if(s1.equals(user)&&s2.equals(pass)){
+						JOptionPane.showMessageDialog(frame, "Log in successfully!");
+						frame.setVisible(false);
+						frame2 frame_second=new frame2();
+						frame_second.setVisible(true);
+					}
+					else
+						JOptionPane.showMessageDialog(frame, "Access denied!");
+						
+					}
+					stmt1.close();
+					con1.close();
+					} catch(Exception ex) {
+						ex.printStackTrace();
+					}
+			}
+		});
+		btnEnter.setBounds(256, 302, 89, 23);
+		background.add(btnEnter);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(88, 289, 507, 2);
+		background.add(separator);
+		frame.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{panel, frame.getContentPane(), panel_2, lblUsername, textField, panel_3, lblPassword, passwordField, panel_1, lblLogIn, btnCancel, btnEnter, separator}));
+	}
+}       
+       
+       
+
+ 
+        
+        
+        
+        
+                                          
+                                          
+                                                       //adaug.java
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JTextField;
+import java.awt.Color;
+import javax.swing.SwingConstants;
+import javax.swing.JButton;
+
+import java.sql.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+public class adaug extends JFrame {
+
+	private JPanel contentPane;
+	private String s,s1,s2,s3,s4;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTextField textField_3;
+	private JLabel lblId;
+	private JTextField textField_4;
+	private JButton btnOk;
+	private JButton btnOk_1;
+	String url = "jdbc:mysql://localhost:3306/demo?useSSL=false";
+	Connection con1;
+	String log="select Nume_film,Categorie_film,Data_lansarii,Rating_imdb,ID_imdb from filme";
+	Statement stmt1;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					adaug frame = new adaug();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public adaug() {
+		setTitle("Adauga film");
+		setBounds(480, 200, 400, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(102, 153, 153));
+		panel.setForeground(new Color(102, 153, 153));
+		contentPane.add(panel, BorderLayout.CENTER);
+		panel.setLayout(null);
+		
+		JLabel lblNumeFilm = new JLabel("Nume film:");
+		lblNumeFilm.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNumeFilm.setForeground(new Color(255, 255, 255));
+		lblNumeFilm.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+		lblNumeFilm.setBounds(53, 27, 79, 25);
+		panel.add(lblNumeFilm);
+		
+		textField = new JTextField();
+		textField.setBounds(142, 28, 148, 25);
+		panel.add(textField);
+		textField.setColumns(10);
+		JLabel lblGenFilm = new JLabel("Gen film:");
+		lblGenFilm.setHorizontalAlignment(SwingConstants.CENTER);
+		lblGenFilm.setForeground(new Color(255, 255, 255));
+		lblGenFilm.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+		lblGenFilm.setBounds(53, 76, 92, 25);
+		panel.add(lblGenFilm);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(142, 74, 148, 25);
+		panel.add(textField_1);
+		textField_1.setColumns(10);
+		JLabel lblDataLansare = new JLabel("Data lansare:");
+		lblDataLansare.setToolTipText("YYYY/MM/DD");
+		lblDataLansare.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDataLansare.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+		lblDataLansare.setForeground(new Color(255, 255, 255));
+		lblDataLansare.setBounds(38, 117, 94, 25);
+		panel.add(lblDataLansare);
+		
+		textField_2 = new JTextField();
+		textField_2.setBounds(142, 118, 148, 25);
+		panel.add(textField_2);
+		textField_2.setColumns(10);
+		JLabel lblRating = new JLabel("Rating:");
+		lblRating.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRating.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+		lblRating.setForeground(new Color(255, 255, 255));
+		lblRating.setBounds(53, 155, 92, 25);
+		panel.add(lblRating);
+		
+		textField_3 = new JTextField();
+		textField_3.setBounds(142, 156, 47, 25);
+		panel.add(textField_3);
+		textField_3.setColumns(10);
+		lblId = new JLabel("ID:");
+		lblId.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+		lblId.setHorizontalAlignment(SwingConstants.CENTER);
+		lblId.setForeground(new Color(255, 255, 255));
+		lblId.setBounds(86, 190, 46, 25);
+		panel.add(lblId);
+		
+		textField_4 = new JTextField();
+		textField_4.setColumns(10);
+		textField_4.setBounds(142, 191, 47, 25);
+		panel.add(textField_4);
+		btnOk = new JButton("< Back");
+		btnOk.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				dispose();
+			}
+		});
+		btnOk.setBounds(56, 226, 89, 23);
+		panel.add(btnOk);
+		
+		btnOk_1 = new JButton("Next >");
+		btnOk_1.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				s=textField.getText();
+				s4=textField_4.getText();
+				s3=textField_3.getText();
+				s2=textField_2.getText();
+				s1=textField_1.getText();
+					
+				String rez="insert into Filme values('"+s+"','"+s1+"','"+s2+"',"+s3+","+s4+")";
+				try {
+					con1 = DriverManager.getConnection(url,"Luca", "1234");
+					stmt1 = con1.createStatement();
+					stmt1.executeUpdate(rez);
+					stmt1.close();
+					con1.close();
+					JOptionPane.showMessageDialog(contentPane, "Film adaugat!");
+					dispose();
+					
+					} catch(Exception ex) {
+						ex.printStackTrace();
+						JOptionPane.showMessageDialog(contentPane, "EROARE!");
+					}
+			}
+		});
+		btnOk_1.setBounds(219, 226, 89, 23);
+		panel.add(btnOk_1);
+	}
+}
+
+                                                       //frame2.java
+                                                       
+ import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.EventQueue;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
+import javax.swing.JButton;
+import javax.swing.BoxLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
+import javax.swing.JInternalFrame;
+
+import java.sql.*;
+import java.util.ArrayList;
+
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
+
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
+
+import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.Font;
+import java.awt.Frame;
+
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.JList;
+import javax.swing.JTextArea;
+public class frame2 extends JFrame{
+
+	private JPanel contentPane;
+	private ArrayList<String>rez=new ArrayList<String>();
+	private ArrayList<String>listafilme=new ArrayList<String>();
+	private int n,n2;
+	String url = "jdbc:mysql://localhost:3306/demo?useSSL=false";
+	Connection con1,con2;
+	String log="select Nume_film,Categorie_film,Data_lansarii,Rating_imdb,ID_imdb  from filme order by Categorie_film";
+	Statement stmt1,stmt2;
+	PrintWriter writer;
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					frame2 frame = new frame2();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public frame2() {
+		JFrame f=new JFrame();
+		f.setBounds(465, 135, 480, 420);
+		
+		Canvas c=new Canvas();
+		c.setBackground(Color.BLACK);
+		JPanel p=new JPanel();
+		p.setLayout(new BorderLayout());
+		p.add(c);
+		f.add(p);
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(),"C:\\Program Files\\VideoLAN\\VLC");
+		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(),LibVlc.class);
+		MediaPlayerFactory mpf=new MediaPlayerFactory();
+		EmbeddedMediaPlayer emp=mpf.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(f));
+		emp.setVideoSurface(mpf.newVideoSurface(c));
+		//emp.toggleFullScreen();
+		emp.setEnableMouseInputHandling(true);
+		emp.setEnableKeyInputHandling(true);
+		
+		
+		setBackground(new Color(102, 153, 153));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(250, 100, 700, 500);
+		setTitle("MENIU PRINCIPAL");
+		contentPane = new JPanel();
+		contentPane.setBackground(new Color(102, 153, 153));
+		contentPane.setLayout(null);
+		setContentPane(contentPane);
+		try {
+			con1 = DriverManager.getConnection(url,"Luca", "1234");
+			stmt1 = con1.createStatement();
+			ResultSet rs=stmt1.executeQuery(log);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			
+			while (rs.next()) {
+				String aux=rs.getString("Categorie_film");
+				rez.add(aux);
+				String aux2=rs.getString("Nume_film");
+				listafilme.add(aux);
+				}
+			n=rez.size();
+			n2=rez.size();
+			for (int h = 0; h < n; h++) {
+				for(int j =0; j < n; j++) {
+					if(j==h)
+						continue;
+					if(rez.get(h).contentEquals(rez.get(j))){
+						rez.remove(j);
+						n--;
+					}	
+				}
+			}
+			
+			stmt1.close();
+			con1.close();
+			} catch(Exception ex) {
+				ex.printStackTrace();
+			}
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setBackground(new Color(102, 153, 153));
+		splitPane.setForeground(new Color(102, 153, 153));
+		splitPane.setBounds(0, 0, 684, 421);
+		contentPane.add(splitPane);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(102, 153, 153));
+		panel_1.setSize(200,500);
+		splitPane.setRightComponent(panel_1);
+		panel_1.setLayout(null);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setFont(new Font("Arial", Font.ITALIC, 15));
+		textArea.setBounds(121, 118, 236, 132);
+		panel_1.add(textArea);
+		
+		JButton btnFilm = new JButton("TRAILER");
+		btnFilm.setBounds(191, 290, 89, 23);
+		panel_1.add(btnFilm);
+		
+		splitPane.setDividerLocation(200);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(102, 153, 153));
+		splitPane.setLeftComponent(panel_2);
+		panel_2.setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPane.setBounds(0, 0, 199, 419);
+		panel_2.add(scrollPane);
+		
+		JTree tree = new JTree();
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+		    public void valueChanged(TreeSelectionEvent e) {
+		        DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+		                           tree.getLastSelectedPathComponent();
+
+		    /* if nothing is selected */ 
+		        if (node == null) return;
+
+		    /* retrieve the node that was selected */ 
+		        Object nodeInfo = node.getUserObject();
+		        try {
+					con2 = DriverManager.getConnection(url,"Luca", "1234");
+					stmt2 = con2.createStatement();
+					ResultSet rs=stmt2.executeQuery(log);
+				    
+					while (rs.next()) {
+						
+						String aux2=rs.getString("Nume_film");
+						String aux3=rs.getString("Categorie_film");
+						String aux4=rs.getString("Data_lansarii");
+						String aux5=rs.getString("Rating_imdb");
+						String aux6=rs.getString("ID_imdb");
+						if(aux2.equals(nodeInfo.toString())){
+						   textArea.setAlignmentX(SwingConstants.CENTER);
+						   textArea.setText("\n        Nume: "+aux2+"\n        Categorie: "+aux3+"\n        Data lansare: "+aux4+"\n        Rating: "+aux5+"\n        ID:  "+aux6);
+						   String file="C:\\Users\\misco\\workspace\\MyApp\\movie\\"+aux2+".mp4";
+						   btnFilm.addMouseListener(new MouseAdapter() {
+								@Override
+								public void mouseClicked(MouseEvent arg0) {
+									f.setVisible(true);
+									emp.prepareMedia(file);
+									emp.play();
+									if(f.getDefaultCloseOperation()==0){
+										emp.stop();
+										f.dispose();
+									}
+								}
+							});
+						    
+						}
+					}
+					stmt2.close();
+					con2.close();
+					} catch(Exception ex) {
+						ex.printStackTrace();
+					}
+		        
+		   
+		    }
+		});
+		tree.setModel(new DefaultTreeModel(
+			new DefaultMutableTreeNode("Categorii") {
+				{
+					DefaultMutableTreeNode[] node_1 =new DefaultMutableTreeNode[n];
+				
+					try {
+						int ok=0;
+						con1 = DriverManager.getConnection(url,"Luca", "1234");
+						stmt1 = con1.createStatement();
+						ResultSet rs=stmt1.executeQuery(log);
+						
+						for (int h = 0; h < n; h++){
+							if(rez.get(h) != null){
+								node_1[h] = new DefaultMutableTreeNode(rez.get(h));	
+							}
+							add(node_1[h]);
+						}
+						while (rs.next()) {
+							String categ=rs.getString("Categorie_film");
+							String nume=rs.getString("Nume_film");
+							
+							for (int h = 0; h < n; h++){
+								if(rez.get(h).contentEquals(categ)){
+									node_1[h].add(new DefaultMutableTreeNode(nume));
+		
+									
+								}
+							}
+					
+						}
+						stmt1.close();
+						con1.close();
+						} catch(Exception ex) {
+							ex.printStackTrace();
+						}
+				}
+			}
+		));
+		scrollPane.setViewportView(tree);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(102, 153, 153));
+		panel.setBounds(0, 421, 684, 40);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		JButton btnAdaugaFilm = new JButton("Add");
+		btnAdaugaFilm.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				adaug addd=new adaug();
+				addd.setVisible(true);
+			}
+		});
+		btnAdaugaFilm.setBounds(108, 11, 89, 23);
+		panel.add(btnAdaugaFilm);
+		
+		JButton btnStergeFilm = new JButton("Delete");
+		btnStergeFilm.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				sterg strg=new sterg();
+				strg.setVisible(true);
+			}
+		});
+		btnStergeFilm.setBounds(299, 11, 89, 23);
+		panel.add(btnStergeFilm);
+		
+		JButton btnRaport = new JButton("Raport");
+		btnRaport.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JOptionPane.showMessageDialog(contentPane, "Raport intocmit!");
+				
+				try {
+					writer = new PrintWriter("raportare.txt", "UTF-8");
+					
+				} catch (FileNotFoundException | UnsupportedEncodingException e1) {
+					
+					e1.printStackTrace();
+				}
+				try {
+					con1 = DriverManager.getConnection(url,"Luca", "1234");
+					stmt1 = con1.createStatement();
+					ResultSet rs=stmt1.executeQuery(log);
+					writer.println("Gen\t\t\t"+"Nume");
+					while (rs.next()) {
+						String s,s1,s2;
+						s=rs.getString("Nume_film");
+						s1=rs.getString("Categorie_film");
+						writer.println(s1+"      "+s);
+						
+					}
+					writer.close();
+					stmt1.close();
+					con1.close();
+					} catch(Exception ex) {
+						ex.printStackTrace();
+					}
+			}
+		});
+		btnRaport.setBounds(500, 11, 89, 23);
+		panel.add(btnRaport);
+	}
+}
+
+
+
+
+                                                      //sterg.java
+                                                      
+                                                      
+import java.awt.BorderLayout;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+
+import java.sql.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+public class sterg extends JFrame {
+
+	private String s;
+	private JPanel contentPane;
+	private JTextField textField;
+	String url = "jdbc:mysql://localhost:3306/demo?useSSL=false";
+	Connection con1;
+	String log="select Nume_film,Categorie_film,Data_lansarii,Rating_imdb,ID_imdb from filme";
+	Statement stmt1;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					sterg frame = new sterg();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public sterg() {
+		
+		setTitle("Stergere film");
+		setBounds(530, 200, 270, 130);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(102, 153, 153));
+		contentPane.add(panel, BorderLayout.CENTER);
+		panel.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Nume:");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel.setForeground(new Color(255, 255, 255));
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+		lblNewLabel.setBounds(21, 9, 70, 25);
+		panel.add(lblNewLabel);
+		
+		textField = new JTextField();
+		textField.setBounds(73, 11, 145, 23);
+		panel.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				s=textField.getText();
+				
+					
+				String rez="delete from Filme where Nume_film='"+s+"'";
+				try {
+					con1 = DriverManager.getConnection(url,"Luca", "1234");
+					stmt1 = con1.createStatement();
+					stmt1.executeUpdate(rez);
+					stmt1.close();
+					con1.close();
+					JOptionPane.showMessageDialog(contentPane, "Film sters!");
+					dispose();
+					} catch(Exception ex) {
+						ex.printStackTrace();
+						JOptionPane.showMessageDialog(contentPane, "EROARE!");
+					}
+			}
+		});
+		btnDelete.setBounds(133, 47, 89, 23);
+		panel.add(btnDelete);
+		
+		JButton button = new JButton("< Back");
+		button.addMouseListener(new MouseAdapter() {
+		
+			public void mouseClicked(MouseEvent e) {
+				dispose();
+			}
+		});
+		button.setBounds(21, 47, 89, 23);
+		panel.add(button);
+	}
+
+}
+                                                      
+                                                      
+                                                       
+
+
+
+
+                                                   
+                                                    
+                                                    
+                                                    
+                                                    
